@@ -20,5 +20,3 @@ def palindromic_unique(values):
 
 def answer(access_codes):
     return len(palindromic_unique(access_codes))
-
-print(answer(["x", "y", "xy", "yy", "", "yx"]))
