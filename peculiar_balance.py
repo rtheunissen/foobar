@@ -62,3 +62,5 @@ def solve(starting_weight):
 
 def answer(x):
     return solve(x)
+
+print answer(500)
