@@ -16,8 +16,8 @@ Concept:
 
     The plan here is to divide that pattern into three,
     thereby giving us sections which we can now treat the same as the first column.
-request
-    The only tricky thing as that the pattern is offset by the column boundary of the previous column.
+
+    The only tricky thing is that the pattern is offset by the column boundary of the previous column.
     These boundaries are at 1, 4, 13, 40 etc and can be calculated by B = 0.5 * (3 ** C - 1)
 """
 
