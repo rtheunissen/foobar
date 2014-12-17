@@ -40,7 +40,7 @@ Output:
 
 import math
 
-# used for memoization of recurrence relation
+# used for memoization of recurrences
 cache = {}
 
 def R(n):
@@ -50,7 +50,6 @@ def R(n):
         return [1,1,2][n]
 
     if n in cache:
-
         # grab it from the cache instead of repeating the recursion
         return cache[n]
 
@@ -70,31 +69,32 @@ def R(n):
 
 def search(a, b, target, odd):
 
-    if b > a:
+    if b < a:
+        # binary search index overlap - target not found
+        return None
 
-        # midpoint
-        n = a + ((b - a) >> 1)
+    # midpoint
+    n = a + ((b - a) >> 1)
 
-        # force either even or odd
-        n += odd != n & 1
+    # adjust to correct parity
+    n += odd != n & 1
 
-        # calculate for n
-        S = R(n)
+    # calculate R(n) for n
+    S = R(n)
 
-        if S == target:
+    if S == target:
+        # these are the numbers you are looking for
+        return n
 
-            # these are the numbers you are looking for
-            return n
+    if S > target:
+        # endpoint is now the midpoint
+        b = n - 1
+    else:
+        # starting point is now the midpoint
+        a = n + 1
 
-        if S > target:
-            # endpoint is now the midpoint
-            b = n - 1
-        else:
-            # starting point is now the midpoint
-            a = n + 1
-
-        # sweet, sweet recursion
-        return search(a, b, target, odd)
+    # keep searching using the adjusted indices
+    return search(a, b, target, odd)
 
 def answer(str_S):
     s = int(str_S)

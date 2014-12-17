@@ -49,8 +49,10 @@ Inputs:
 Output:
     (int) 0
 """
+
 def answer(heights):
     return two_rats_go_for_a_swim(heights)
+
 
 """
 I've tried my best to solve this problem using formulas and logic
