@@ -67,7 +67,7 @@ def R(n):
 """
 Binary search for target over only odds or evens between a, b
 """
-def search(a, b, target, odd):
+def search(a, b, target, parity):
 
     if b < a:
         # binary search index overlap - target not found
@@ -77,7 +77,7 @@ def search(a, b, target, odd):
     n = a + ((b - a) >> 1)
 
     # adjust to correct parity
-    n += odd != n & 1
+    n += parity != n & 1
 
     # calculate R(n) for n
     S = R(n)
@@ -94,7 +94,7 @@ def search(a, b, target, odd):
         a = n + 1
 
     # keep searching using the adjusted indices
-    return search(a, b, target, odd)
+    return search(a, b, target, parity)
 
 def answer(str_S):
     s = int(str_S)
