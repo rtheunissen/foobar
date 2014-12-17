@@ -38,11 +38,12 @@ Output:
     (string) "None"
 """
 
-import math
-
 # used for memoization of recurrence relation
 cache = {}
 
+"""
+Memoized recursive calculation of R
+"""
 def R(n):
 
     if n < 3:
@@ -63,33 +64,37 @@ def R(n):
 
     return cache[n]
 
+"""
+Binary search for target over only odds or evens between a, b
+"""
 def search(a, b, target, odd):
 
-    if b > a:
+    if b < a:
+        # binary search index overlap - target not found
+        return None
 
-        # midpoint
-        n = a + ((b - a) >> 1)
+    # midpoint
+    n = a + ((b - a) >> 1)
 
-        # force either even or odd
-        n += odd != n & 1
+    # adjust to correct parity
+    n += odd != n & 1
 
-        # calculate R(n) for n
-        S = R(n)
+    # calculate R(n) for n
+    S = R(n)
 
-        if S == target:
+    if S == target:
+        # these are the numbers you are looking for
+        return n
 
-            # these are the numbers you are looking for
-            return n
+    if S > target:
+        # endpoint is now the midpoint
+        b = n - 1
+    else:
+        # starting point is now the midpoint
+        a = n + 1
 
-        if S > target:
-            # endpoint is now the midpoint
-            b = n - 1
-        else:
-            # starting point is now the midpoint
-            a = n + 1
-
-        # keep searching using new indices
-        return search(a, b, target, odd)
+    # keep searching using the adjusted indices
+    return search(a, b, target, odd)
 
 def answer(str_S):
     s = int(str_S)
