@@ -69,7 +69,7 @@ Binary search for target over only odds or evens between a, b
 """
 def search(a, b, target, parity):
 
-    if b < a:
+    if b <= a:
         # binary search index overlap - target not found
         return None
 
