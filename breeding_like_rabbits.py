@@ -17,25 +17,6 @@ Being bored with the day-to-day duties of a henchman, a bunch of Professor Boole
 (Not in this story: Professor Boolean later downsizes his operation, and you can guess what happens to these minions.)
 
 Write a function answer(str_S) which, given the base-10 string representation of an integer S, returns the largest n such that R(n) = S. Return the answer as a string in base-10 representation. If there is no such n, return "None". S will be a positive integer no greater than 10^25.
-
-Languages
-=========
-
-To provide a Python solution, edit solution.py
-To provide a Java solution, edit solution.java
-
-Test cases
-==========
-
-Inputs:
-    (string) str_S = "7"
-Output:
-    (string) "4"
-
-Inputs:
-    (string) str_S = "100"
-Output:
-    (string) "None"
 """
 
 # used for memoization of recurrence relation
