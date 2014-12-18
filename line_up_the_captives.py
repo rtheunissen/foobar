@@ -45,5 +45,24 @@ Output:
     (string) "24"
 """
 
+from math import factorial
+
+cache = {}
+
+# stirling numbers of the first kind
+def s1(n, m):
+
+    if n == 0 or m == 0:
+        return n == m
+
+    if (n, m) not in cache:
+        cache[n, m] = (n - 1) * s1(n - 1, m) + s1(n - 1, m - 1)
+
+    return cache[n, m]
+
+# n choose k
+def binomial(n, k):
+    return factorial(n) / (factorial(k) * factorial(n - k))
+
 def answer(x,y,n):
-    pass
+    return s1(n - 1, x + y - 2) * binomial(x + y - 2, x - 1)
