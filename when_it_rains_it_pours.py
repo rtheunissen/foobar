@@ -2,9 +2,16 @@
 When it rains it pours
 ======================
 
-It's raining, it's pouring. You and your agents are nearing the building where the captive rabbits are being held, but a sudden storm puts your escape plans at risk. The structural integrity of the rabbit hutches you've built to house the fugitive rabbits is at risk because they can buckle when wet. Before the rabbits can be rescued from Professor Boolean's lab, you must compute how much standing water has accumulated on the rabbit hutches.
+It's raining, it's pouring. You and your agents are nearing the building where the captive rabbits are being held,
+but a sudden storm puts your escape plans at risk.
 
-Specifically, suppose there is a line of hutches, stacked to various heights and water is poured from the top (and allowed to run off the sides). We'll assume all the hutches are square, have side length 1, and for the purposes of this problem we'll pretend that the hutch arrangement is two-dimensional.
+The structural integrity of the rabbit hutches you've built to house the fugitive rabbits is at risk
+because they can buckle when wet. Before the rabbits can be rescued from Professor Boolean's lab,
+you must compute how much standing water has accumulated on the rabbit hutches.
+
+Specifically, suppose there is a line of hutches, stacked to various heights and water is poured from the top
+(and allowed to run off the sides). We'll assume all the hutches are square, have side length 1,
+and for the purposes of this problem we'll pretend that the hutch arrangement is two-dimensional.
 
 For example, suppose the heights of the stacked hutches are [1,4,2,5,1,2,3] (the hutches are shown below):
 
@@ -26,97 +33,132 @@ XXXXXXX
 
 The amount of water that has accumulated is the number of Os, which, in this instance, is 5.
 
-Write a function called answer(heights) which, given the heights of the stacked hutches from left-to-right as a list, computes the total area of standing water accumulated when water is poured from the top and allowed to run off the sides.
+Write a function called answer(heights) which, given the heights of the stacked hutches from left-to-right as a list,
+computes the total area of standing water accumulated as water is poured from the top and allowed to run off the sides.
 
-The heights array will have at least 1 element and at most 9000 elements. Each element will have a value of at least 1, and at most 100000.
-
-Languages
-=========
-
-To provide a Python solution, edit solution.py
-To provide a Java solution, edit solution.java
-
-Test cases
-==========
-
-Inputs:
-    (int list) heights = [1, 4, 2, 5, 1, 2, 3]
-Output:
-    (int) 5
-
-Inputs:
-    (int list) heights = [1, 2, 3, 2, 1]
-Output:
-    (int) 0
+The heights array will have at least 1 element and at most 9000 elements.
+Each element will have a value of at least 1, and at most 100000.
 """
-
-def answer(heights):
-    return two_rats_go_for_a_swim(heights)
 
 
 """
 I've tried my best to solve this problem using formulas and logic
 but all my scribbles and calculations keep getting ruined in the rain.
 
-A decision was made to employ the services of a couple of keen water rats (Fats and Slim) who
-were also trapped in the lab. We made a deal that if we set them free, they will
+A decision was made to employ the services of a local water rat (Pete) who
+were also trapped in the lab. We made a deal that if we set him free, he will
 help us determine how much standing water we're dealing with so we can all escape.
 
-They spend a couple of minutes whispering to each other before they let us in on their plan:
+He spends a couple of minutes formulating his plan as he paces around the room:
 
-    - They will climp to the top of the first column, and swim across to the last one.
-    - Fats is the better swimmer so he will dive into the water and keep track of the depths.
-    - When he returns to the surface, Slim will paddle across to him and add up his numbers.
+    - He will climp to the top of the first column and find next hutch above water.
+    - He will count the depths he dives to as he's swimming along to that hutch.
+    - He will then sum the difference between the depths and the water's surface level.
+
+    Eg.
+
+       X
+    X  X   X
+    X XX X X
+    XXXXXX X
+    XXXXXXXX
+    42352314
+
+    --------------------
+
+    Pete -->    P  X
+                X  X   X
+                X XX X X
+                XXXXXX X
+                XXXXXXXX    Total = 0
+
+    Then dives into the water, counting how deep he goes for each column.
+    He counts 2 and 1 before he comes back to the surface and climbs up at target = 3.
+
+                   X
+                XPPX   X
+                XPXX X X
+                XXXXXX X
+                XXXXXXXX
+
+                   P
+                   X
+                XOOX   X
+                XOXX X X
+                XXXXXX X
+                XXXXXXXX    Total =  0 + 3
+
+    He looks ahead to find either a column at his current height or higher, or simply
+    the highest column he can see. In this case it's the last one at target = 7
+
+    He dives into the water at a surface level of 4 (min(h[current], h[target])).
+    He counts 2, 1 and 3 before he breaches the surface at the last column.
+
+    He can see that there are no more hutches ahead or below him, so he's done.
+
+                   X
+                XOOXPPPX
+                XOXXPXPX
+                XXXXXXPX
+                XXXXXXXX
+
+
+                   X   P
+                XOOXOOOX
+                XOXXOXOX
+                XXXXXXOX
+                XXXXXXXX    Total = 3 + 6
+
+    Answer = 9
 
 """
-def two_rats_go_for_a_swim(h):
+def answer(h):
 
-    slim = 0
-    fats = 0
+    p = 0
     total = 0
     end = len(h)
 
     if end < 3:
         return 0
 
-    # while fats has not reached the end of the stack
-    while fats < end - 1:
+    # while pete has not reached the end
+    while p < end - 1:
 
-        # fats tries to look ahead to see where he should be swimming to
-        target = fats + 1
-        for index in range(fats + 1, end):
+        # pete looks ahead to find either a column at his current height or higher,
+        # or simply the highest column he can see.
+        target = p + 1
+        for index in range(p + 1, end):
 
-            # fats and slim can see the top of a hutch above them
-            if h[index] >= h[fats]:
+            if h[index] >= h[p]:
+                # he sees a hutch either on his current level
+                # or higher than he is and marks his target
                 target = index
                 break
 
-            # fats and slim can see the top of a hutch below them
-            # but are still looking ahead for a better target
             if h[index] > h[target]:
+                # this hutch is higher than the previous one
+                # but it's possible that it's underwater, so keep looking
                 target = index
 
-        if target == fats:
-            # fats can see that the rest of the water spills down to the floor
-            # so what they've counted so far has to be the final amount
+        if target == p:
+            # pete can't see any peak hutches ahead or below him
+            # so he climbs down to report the final result
             return total
 
-        # slim makes a note of the current surface level while fats checks his scuba gear
-        surface = min(h[slim], h[target])
+        # pete makes a note of the current surface level before he checks his scuba gear
+        surface = min(h[p], h[target])
 
-        # fats takes a dive into the murky rain water and swims one box ahead
-        fats += 1
+        # pete takes a dive into the murky rain water and swims one column ahead
+        p += 1
 
-        # while has not yet reached his target
-        while fats < target:
+        # on his way to the target...
+        while p < target:
 
-            # fats counts the difference between the surface of the water his current depth
-            total += surface - h[fats]
+            # pete counts the difference between the surface of the water and his current depth
+            total += surface - h[p]
 
-            # fats swims ahead
-            fats += 1
+            # as he keeps swimming across
+            p += 1
 
-        # slim paddles across the water to catch up to fats
-        slim = fats
-
+    # no more hutches left
     return total
