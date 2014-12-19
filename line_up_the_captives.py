@@ -35,21 +35,23 @@ The viewable rabbits from either side (x and y) will be as small as 1 and as lar
 
 from math import factorial
 
-#
+# used for memoization of recursively calculating sterling numbers
 cache = {}
 
 
 # unsigned stirling numbers of the first kind
 def s1(n, m):
 
-    #
+    # base cases for the recursion are:
+    # 1 when n && m are 0
+    # 0 when n || m are 0
     if n == 0 or m == 0:
         return n == m
 
-    #
+    # check if we have already calculated the current level of recursion
     if (n, m) not in cache:
 
-        #
+        # recursively calculate to cache
         cache[n, m] = (n - 1) * s1(n - 1, m) + s1(n - 1, m - 1)
 
     return cache[n, m]
@@ -61,7 +63,6 @@ def binomial(n, k):
 
 
 def answer(x, y, n):
-    #
     #
     #
     return s1(n - 1, x + y - 2) * binomial(x + y - 2, x - 1)
