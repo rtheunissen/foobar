@@ -32,3 +32,36 @@ If there is no possible arrangement, return "0".
 The number of rabbits (n) will be as small as 3 or as large as 40
 The viewable rabbits from either side (x and y) will be as small as 1 and as large as the total number of rabbits (n).
 """
+
+from math import factorial
+
+#
+cache = {}
+
+
+# unsigned stirling numbers of the first kind
+def s1(n, m):
+
+    #
+    if n == 0 or m == 0:
+        return n == m
+
+    #
+    if (n, m) not in cache:
+
+        #
+        cache[n, m] = (n - 1) * s1(n - 1, m) + s1(n - 1, m - 1)
+
+    return cache[n, m]
+
+
+# binomial coefficients, ie n choose k
+def binomial(n, k):
+    return factorial(n) / (factorial(k) * factorial(n - k))
+
+
+def answer(x, y, n):
+    #
+    #
+    #
+    return s1(n - 1, x + y - 2) * binomial(x + y - 2, x - 1)

@@ -1,24 +1,22 @@
 from math import log
 
 """
-Concept:
+Complexity: O(log(n)), loops = number of steps required, calculations are O(1)
 
-    Complexity: O(log(n)), loops = number of steps required, calculations are O(1)
+If you break the result of a few done by hand into patterns, you will notice that for column number n,
+the pattern [R, L, -] repeats every 3 ** n times.
 
-    If you break the result of a few done by hand into patterns, you will notice that for column number n,
-    the pattern [R, L, -] repeats every 3 ** n times.
+We need to be able to determine which of the three steps are required.
+This is obvious and easy for the first column, because it's simply mod 3.
 
-    We need to be able to determine which of the three steps are required.
-    This is obvious and easy for the first column, because it's simply mod 3.
+The same pattern can be found in the second column,
+but instead of [R, L, -] we have [R, R, R, L, L, L, -, -, -].
 
-    The same pattern can be found in the second column,
-    but instead of [R, L, -] we have [R, R, R, L, L, L, -, -, -].
+The plan here is to divide that pattern into three,
+thereby giving us sections which we can now treat the same as the first column.
 
-    The plan here is to divide that pattern into three,
-    thereby giving us sections which we can now treat the same as the first column.
-
-    The only tricky thing is that the pattern is offset by the column boundary of the previous column.
-    These boundaries are at 1, 4, 13, 40 etc and can be calculated by using (3 ** n - 1) / 2
+The only tricky thing is that the pattern is offset by the column boundary of the previous column.
+These boundaries are at 1, 4, 13, 40 etc and can be calculated by using (3 ** n - 1) / 2
 """
 
 """
