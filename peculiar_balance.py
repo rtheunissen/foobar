@@ -41,6 +41,11 @@ def instruction_index(n, weight):
     # section treated as first column, just need the remainder
     return corrected % 3
 
+
+"""
+
+Research: none.
+"""
 def answer(weight):
 
     # these will be passed to
@@ -61,3 +66,7 @@ def answer(weight):
         instructions.append(choices[i])
 
     return instructions
+
+
+for i in range(1, 200):
+    print answer(i)
