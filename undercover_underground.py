@@ -2,12 +2,20 @@
 Undercover underground
 ======================
 
-As you help the rabbits establish more and more resistance groups to fight against Professor Boolean, you need a way to pass messages back and forth.
+As you help the rabbits establish more and more resistance groups to fight against Professor Boolean,
+you need a way to pass messages back and forth.
 
 
-Luckily there are abandoned tunnels between the warrens of the rabbits, and you need to find the best way to use them. In some cases, Beta Rabbit wants a high level of interconnectedness, especially when the groups show their loyalty and worthiness. In other scenarios the groups should be less intertwined, in case any are compromised by enemy agents or zombits.
+Luckily there are abandoned tunnels between the warrens of the rabbits, and you need to find the best way to use them.
+In some cases, Beta Rabbit wants a high level of interconnectedness,
+especially when the groups show their loyalty and worthiness.
 
-Every warren must be connected to every other warren somehow, and no two warrens should ever have more than one tunnel between them. Your assignment: count the number of ways to connect the resistance warrens.
+In other scenarios the groups should be less intertwined,
+in case any are compromised by enemy agents or zombits.
+
+Every warren must be connected to every other warren somehow,
+and no two warrens should ever have more than one tunnel between them.
+Your assignment: count the number of ways to connect the resistance warrens.
 
 For example, with 3 warrens (denoted A, B, C) and 2 tunnels, there are three distinct ways to connect them:
 
@@ -17,165 +25,124 @@ C-A-B
 
 With 4 warrens and 6 tunnels, the only way to connect them is to connect each warren to every other warren.
 
-Write a function answer(N, K) which returns the number of ways to connect N distinctly labelled warrens with exactly K tunnels, so that there is a path between any two warrens.
+Write a function answer(N, K) which returns the number of ways to connect N distinctly labelled warrens
+with exactly K tunnels, so that there is a path between any two warrens.
 
 The return value must be a string representation of the total number of ways to do so, in base 10.
 N will be at least 2 and at most 20.
 K will be at least one less than N and at most (N * (N - 1)) / 2
-
-Languages
-=========
-
-To provide a Python solution, edit solution.py
-To provide a Java solution, edit solution.java
-
-Test cases
-==========
-
-Inputs:
-    (int) N = 2
-    (int) K = 1
-Output:
-    (string) "1"
-
-Inputs:
-    (int) N = 4
-    (int) K = 3
-Output:
-    (string) "16"
 """
 
-from math import factorial
-from string import ascii_uppercase
-from itertools import combinations, permutations
+
+# used for memoizing binomial coefficient calculation
+mem_choose = {}
+
+# used for memoizing total number of possible graphs for n, k
+mem_graphs = {}
+
+# used for memoizing recursive relation of counting distinct graphs
+mem_counts = {}
 
 
-def number_of_combinations_that_are_not_valid(N, K):
+"""
+Calculates the binomial coefficient for n, k.
+This is equivalent to 'n choose k'.
+"""
+def choose(n, k):
 
-    nodes = [ascii_uppercase[x] for x in range(N)]
+    key = (n, k)
 
-    edges = [x for x in combinations(nodes, 2)]
+    if key not in mem_choose:
 
-    combs = combinations(edges, K)
+        if k > n:
+            c = 0
 
-    invalid_count = 0
+        elif k == 0 or n == k:
+            c = 1
 
-    for c in combs:
-        reach = set([node for edges in c for node in edges])
-        for node in nodes:
-            if node not in reach:
-                invalid_count += 1
+        elif k == 1 or k == n - 1:
+            c = n
 
-    return invalid_count
+        else:
+            if k > n / 2:
+                k = n - k
 
-def links_all_nodes(permutation, nodes):
+            a = 1
+            b = 1
+            for t in xrange(1, k + 1):
+                a *= n
+                b *= t
+                n -= 1
 
-    required = set([node for edges in permutation for node in edges])
+            c = a // b
 
-    # we want to count the number of combinations that do not
-    # link to all nodes
+        mem_choose[key] = c
 
-    for node in nodes:
-        if node not in required:
-            return False
-    return True
-
-def force(N, K):
-
-    nodes = [ascii_uppercase[x] for x in range(N)]
-
-    edges = [x for x in combinations(nodes, 2)]
-
-    valid = set()
-
-    for p in combinations(edges, K):
-
-        if links_all_nodes(p, nodes):
-            p = tuple(sorted(p))
-            if p[::-1] not in valid:
-                valid.add(p)
-
-    return len(valid)
+    return mem_choose[key]
 
 
+"""
+Returns the total number of graphs with that can be formed using
+n nodes and k vertices. This includes graphs that are
+identical for undirected labelled graphs, as well as
+unconnected graphs.
 
-    # graph = []
+This function effectively returns the number of ways you can
+choose k vertices out of the 'n choose 2' possible choices.
+"""
+def possible_graphs(n, k):
+    if (n, k) not in mem_graphs:
+        mem_graphs[(n, k)] = choose(n * (n - 1) >> 1, k)
 
-    # for j in range(N):
+    return mem_graphs[(n, k)]
 
-    #     letters = [alpha[x] for x in range(0, N)] + [alpha[j]]
-    #     permutations = itertools.permutations(letters)
+"""
+Returns the number of distinct, connected, labelled, undirected
+graphs that can be formed using 'n' nodes and 'k' vertices
+"""
+def count(n, k):
 
-    #     for p in permutations:
+    if (n, k) in mem_counts:
+        # memoized
+        return mem_counts[(n, k)]
 
-    #         edges = []
+    if k == n - 1:
+        # Cayley's formula
+        c = int(n ** (n - 2))
 
-    #         for i in range(N):
-    #             a = p[i]
-    #             b = p[i + 1]
-    #             edge = sorted([a, b])
-    #             if edge not in edges and a != b:
-    #                 edges.append(edge)
+    else:
 
-    #         a = p[i]
-    #         b = p[-1]
-    #         edge = sorted([a, b])
-    #         if edge not in edges and a != b:
-    #             edges.append(edge)
+        # number of possible vertices
+        p = n * (n - 1) >> 1
 
-    #         edges = sorted(edges)
-    #         if edges not in graph and len(edges) == K:
-    #             print edges
-    #             graph.append(edges)
+        if k == p:
+            # only way is to connect each node to all other nodes,
+            # therefore only a single distinct graph
+            c = 1
 
-    # return len(graph)
+        else:
 
-def p(N, K):
-    return factorial(N) / factorial(N - K)
+            # initially all possible graphs
+            c = choose(p, k)
 
-def c(N, K):
-    return factorial(N) / (factorial(K) * factorial(N - K))
+            # there can only be duplicates or unconnected components
+            # if the number of nodes is less than p - n + 2.
+            # equivalent of k < (n - 1 choose 2)
+            if k < p - n + 2:
 
-def answer(N, K):
+                for i in range(1, n):
+                    x = choose(n - 1, i - 1)
 
-    U = N * (N - 1) / 2
+                    # minimum of possible vertices for 'i' nodes and 'k'
+                    y = min(i * (i - 1) >> 1, k)
 
-    if K == U:
-        return 1
+                    for j in range(i - 1, y + 1):
+                        # exclude invalid graphs from the total
+                        c -= x * possible_graphs(n - i, k - j) * count(i, j)
 
-    if N > 3:
-
-        a = U - K - 1
-
-        F = factorial(a) / factorial(K - 1)
-
-        d = N * (F / (N - 1))
-
-
-        return c(U, K) - d
-
-    # if K == N:
-    #     # same number of tunnels are there are nodes
-    #     # this
-
-    #     return p(U, K) / (factorial(K))
-
-print number_of_combinations_that_are_not_valid(6,11)
+    mem_counts[(n, k)] = c
+    return c
 
 
-# for i in range(4, 8):
-#     ex =  force(5, i)
-#     ac = answer(5, i)
-#     print "%s,%s:" % (5, i)
-#     print "%s, %s, %s" % (ex, ac, ex - ac)
-#     print "----"
-
-# for i in range(5, 8):
-#     ex =  force(6, i)
-#     ac = answer(6, i)
-#     print "%s,%s:" % (6, i)
-#     print "%s, %s, %s" % (ex, ac, ex - ac)
-#     print "----"
-
-# print force(5, 5)
-# print answer(5, 5)
+def answer(n, k):
+    return count(n, k)
