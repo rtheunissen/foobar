@@ -26,27 +26,89 @@ it would result in a binary tree identical to one created from [5, 2, 9, 1, 8].
 
 You must write a function answer(seq) that takes an array of up to 50 integers and returns a
 string representing the number (in base-10) of sequences that would result in the same tree as the given sequence.
-
-Languages
-=========
-
-To provide a Python solution, edit solution.py
-To provide a Java solution, edit solution.java
-
-Test cases
-==========
-
-Inputs:
-    (int list) seq = [5, 9, 8, 2, 1]
-Output:
-    (string) "6"
-
-Inputs:
-    (int list) seq = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-Output:
-    (string) "1"
-
 """
 
+from math import factorial
+
+
+"""
+Minimal implementation of a binary search tree.
+"""
+class BST:
+
+    def __init__(self, *values):
+        self.root = None
+        self.left = None
+        self.right = None
+
+        for value in values:
+            self.insert(value)
+
+    def insert(self, value):
+
+        if not self.root:
+            self.root = value
+        else:
+            if value < self.root:
+                # left
+                if self.left:
+                    self.left.insert(value)
+                else:
+                    self.left = BST(value)
+            else:
+                # right
+                if self.right:
+                    self.right.insert(value)
+                else:
+                    self.right = BST(value)
+
+
+
+"""
+Calculates the binomial coefficient for n, k.
+This is equivalent to 'n choose k'.
+"""
+def choose(n, k):
+    return factorial(n) / (factorial(k) * factorial(n - k))
+
+
+"""
+Returns the total number of nodes in a tree, including the root.
+"""
+def count(tree):
+    return 1 + count(tree.left) + count(tree.right) if tree else 0
+
+
+"""
+Returns the number of distinct import orders that produce the given binary tree.
+
+
+
+
+
+
+"""
+def input_permutations(tree):
+
+        if not tree:
+            #
+            return 1
+
+        #
+        ls = count(tree.left)
+        rs = count(tree.right)
+
+        #
+        lp = input_permutations(tree.left)
+        rp = input_permutations(tree.right)
+
+        #
+        #
+        return choose(ls + rs, ls) * lp * rp
+
+
 def answer(seq):
-    pass
+    return input_permutations(BST(*seq))
+
+
+print answer([6,2,3,1,5,4,8,9,7,13,11,20,15,16,17,14,12,19,18,25,24,23,22,21])
