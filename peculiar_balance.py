@@ -66,7 +66,3 @@ def answer(weight):
         instructions.append(choices[i])
 
     return instructions
-
-
-for i in range(1, 200):
-    print i, answer(i)
