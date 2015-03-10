@@ -69,4 +69,4 @@ def answer(weight):
 
 
 for i in range(1, 200):
-    print answer(i)
+    print i, answer(i)
