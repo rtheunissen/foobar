@@ -38,7 +38,6 @@ class ZombitGrowthMaximizer:
     consecutive figures from his data.
     """
 
-
     @classmethod
     def calculate(cls, values, limit):
         """
@@ -57,7 +56,6 @@ class ZombitGrowthMaximizer:
 
         # get and return the maximal sum of the values given the limit
         return cls.maximal(_values, limit)
-
 
     @classmethod
     def maximal(cls, values, limit):
@@ -80,7 +78,7 @@ class ZombitGrowthMaximizer:
             # an accumulator to keep track of the current sum
             acc = 0
 
-            # the number of values that have been processed
+            # the number of values that have been added to the accumulator
             count = 0
 
             # keep looping as long as there are numbers ahead,
@@ -105,7 +103,7 @@ class ZombitGrowthMaximizer:
 
                     # accumulate any successive negative values
                     while values[j - 1] < 0:
-                        nacc += values[j-1]
+                        nacc += values[j - 1]
                         ncount += 1
                         j -= 1
 
@@ -127,30 +125,30 @@ class ZombitGrowthMaximizer:
 
         return maximum
 
-
     @classmethod
     def trim(cls, values):
         """
         Removes leading and trailing negative values from a list
         """
 
-        l = len(values)
+        length = len(values)
+
         i = 0
         j = 1
 
         # count the number of leading negatives
-        while i < l and values[i] < 0:
+        while i < length and values[i] < 0:
             i += 1
 
         # count the number of trailing negatives
-        while j <= l and values[-j] < 0:
+        while j <= length and values[-j] < 0:
             j += 1
 
         # slice the values to exclude the leading and trailing negatives
-        _values = values[i:l-j+1]
+        _values = values[i:length - j + 1]
 
         return _values
 
 
-def answer(a, k):
-    return ZombitGrowthMaximizer.calculate(a, k)
+def answer(L, k):
+    return ZombitGrowthMaximizer.calculate(L, k)
