@@ -31,72 +31,87 @@ at least 2 and no more than 7000 elements, and at least one element will be
 positive. k will be an integer, at least 3 and no greater than the length of L.
 """
 
+class Accumulator:
+    """
+    Provides constant time operations for add, len and sum,
+    but doesn't directly support access or removal.
+    """
+
+    def __init__(self, initial = None):
+        if initial is not None:
+            self._values = [initial]
+            self._sum = initial
+        else:
+            self._values = []
+            self._sum = 0
+
+    def add(self, value):
+        self._values.append(value)
+        self._sum += value
+
+    def extend(self, other):
+        self._values.extend(other._values)
+        self._sum += other.sum()
+
+    def sum(self):
+        return self._sum
+
+    def __len__(self):
+        return len(self._values)
+
+
 class ZombitGrowthMaximizer:
 
+    @staticmethod
     def calculate(numbers, limit):
         """
-        Calculates the maximum growth metric that can be obtained from
-        a given set of values, given a limit on how many consecutive
-        numbers are allowed to be used.
+        Calculates the maximum sum of a limited-length subsequence of a list of numbers
         """
 
-        # used to store the maximum sum during the iteration
         maximum = None
 
         # step through each value from back to front
-        for i in xrange(len(values) - 1, -1, -1):
+        for i in xrange(len(numbers) - 1, -1, -1):
 
-            if values[i] < 0:
+            if numbers[i] < 0:
                 # check max to catch the case when all numbers are negative
-                maximum = max(maximum, values[i])
+                maximum = max(maximum, numbers[i])
                 continue
+
+            # an accumulator to keep track of the current psotitive sum
+            positives = Accumulator()
 
             # initialize the index for the secondary loop
             j = i
 
-            # an accumulator to keep track of the current sum
-            acc = 0
+            while j >= 0 and len(positives) < limit:
 
-            # the number of values that have been added to the accumulator
-            count = 0
-
-            # keep looping as long as there are numbers ahead,
-            # and if we haven't reached the limit yet
-            while j >= 0 and count < limit:
-
-                if values[j] >= 0:
+                if numbers[j] >= 0:
 
                     # a positive value can be added to the accumulator
-                    acc += values[j]
-                    count += 1
+                    positives.add(numbers[j])
 
                     # update the maximum if the accumulator is greater
-                    maximum = max(maximum, acc)
+                    maximum = max(maximum, positives.sum())
 
                 else:
-                    # a negative value
 
                     # an accumulator for collecting negative values
-                    nacc = values[j]
-                    ncount = 1
+                    n = Accumulator(numbers[j])
 
                     # accumulate any successive negative values
-                    while j - 1 >= 0 and values[j - 1] < 0:
-                        nacc += values[j - 1]
-                        ncount += 1
+                    while j - 1 >= 0 and numbers[j - 1] < 0:
+                        negatives.add(numbers[j - 1])
                         j -= 1
 
-                    # if the sum of the negative accumulator doesn't
-                    # negate the positive accumulator and the number
-                    # of values that contributed to the negative sum
-                    # doesn't break the limit, update the positive
-                    # accumulator with the negative sum
-                    if acc + nacc > 0 and count + ncount < limit:
-                        count += ncount
-                        acc += nacc
+                        # break if too many negatives have been accumulated
+                        if len(positives) + len(negatives) == limit:
+                            break
+
+                    if positives.sum() + negatives.sum() > 0:
+                        positives.extend(negatives)
                     else:
-                        # either a run of negatives broke past the limit,
-                        # or the negative sum was too large.
+                        # either too many negatives or the negative sum was too large.
                         break
 
                 # continue on to the next index
