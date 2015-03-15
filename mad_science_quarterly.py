@@ -33,7 +33,8 @@ positive. k will be an integer, at least 3 and no greater than the length of L.
 
 class ZombitGrowthMaximizer:
 
-    def calculate(numbers, limit):
+    @staticmethod
+    def calculate(values, limit):
         """
         Calculates the maximum growth metric that can be obtained from
         a given set of values, given a limit on how many consecutive
