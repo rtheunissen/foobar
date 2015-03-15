@@ -97,7 +97,7 @@ class ZombitGrowthMaximizer:
                 else:
 
                     # an accumulator for collecting negative values
-                    n = Accumulator(numbers[j])
+                    negatives = Accumulator(numbers[j])
 
                     # accumulate any successive negative values
                     while j - 1 >= 0 and numbers[j - 1] < 0:
