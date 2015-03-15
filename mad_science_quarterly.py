@@ -31,46 +31,25 @@ at least 2 and no more than 7000 elements, and at least one element will be
 positive. k will be an integer, at least 3 and no greater than the length of L.
 """
 
-
 class ZombitGrowthMaximizer:
-    """
-    Calculates the maximum sum Professor Boolean can obtain by choosing some
-    consecutive figures from his data.
-    """
 
-    @classmethod
-    def calculate(cls, values, limit):
-        """
-        Prepares the values by removing leading and trailing negatives,
-        checks for special cases, and delegates the final calculation.
-        """
-
-        # get a copy of the values without leading and trailing negatives
-        _values = cls.trim(values)
-
-        # if no values are left over, it means that they were all negative,
-        # in which case all we want to do is return the maximum value
-        # of the original values, ie. greatest of the negatives.
-        if not _values:
-            return max(values)
-
-        # get and return the maximal sum of the values given the limit
-        return cls.maximal(_values, limit)
-
-    @classmethod
-    def maximal(cls, values, limit):
+    def calculate(numbers, limit):
         """
         Calculates the maximum growth metric that can be obtained from
         a given set of values, given a limit on how many consecutive
         numbers are allowed to be used.
         """
 
-        # used to store the maximum sum during the iteration,
-        # and will always be non-negative.
-        maximum = 0
+        # used to store the maximum sum during the iteration
+        maximum = None
 
         # step through each value from back to front
-        for i in xrange(len(values) - 1, 0, -1):
+        for i in xrange(len(values) - 1, -1, -1):
+
+            if values[i] < 0:
+                # check max to catch the case when all numbers are negative
+                maximum = max(maximum, values[i])
+                continue
 
             # initialize the index for the secondary loop
             j = i
@@ -102,7 +81,7 @@ class ZombitGrowthMaximizer:
                     ncount = 1
 
                     # accumulate any successive negative values
-                    while values[j - 1] < 0:
+                    while j - 1 >= 0 and values[j - 1] < 0:
                         nacc += values[j - 1]
                         ncount += 1
                         j -= 1
@@ -124,31 +103,6 @@ class ZombitGrowthMaximizer:
                 j -= 1
 
         return maximum
-
-    @classmethod
-    def trim(cls, values):
-        """
-        Removes leading and trailing negative values from a list
-        """
-
-        length = len(values)
-
-        i = 0
-        j = 1
-
-        # count the number of leading negatives
-        while i < length and values[i] < 0:
-            i += 1
-
-        # count the number of trailing negatives
-        while j <= length and values[-j] < 0:
-            j += 1
-
-        # slice the values to exclude the leading and trailing negatives
-        _values = values[i:length - j + 1]
-
-        return _values
-
 
 def answer(L, k):
     return ZombitGrowthMaximizer.calculate(L, k)
