@@ -12,7 +12,7 @@ Predictably, the task is to  balance the two sides.
 But there is a catch: You only have this peculiar weight set,
 having masses 1, 3, 9, 27, ... units. That is, one  for each power of 3.
 
-Being a brilliantmathematician, Beta Rabbit quickly discovers that any number
+Being a brilliant mathematician, Beta Rabbit quickly discovers that any number
 of units of mass can be balanced exactly using this set. To help Beta get into
 the room, write a method called answer(x), which outputs a list of strings
 representing where the weights should be  placed, in order for the two sides to
