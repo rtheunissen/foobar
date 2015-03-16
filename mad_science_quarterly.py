@@ -1,5 +1,5 @@
 """
-Mad Science Quarterly
+Mad science quarterly
 =====================
 
 The deadline for submitting papers to the Mad Science Quarterly is approaching.
@@ -36,7 +36,6 @@ class Accumulator:
     Provides constant time operations for add, len and sum,
     but doesn't directly support access or removal.
     """
-
     def __init__(self, initial = None):
         if initial is not None:
             self._values = [initial]
@@ -65,7 +64,8 @@ class ZombitGrowthMaximizer:
     @staticmethod
     def calculate(numbers, limit):
         """
-        Calculates the maximum sum of a limited-length subsequence of a list of numbers
+        Calculates the maximum sum of a limited-length subsequence.
+        This is also known as the sliding window minimum problem.
         """
 
         maximum = None
@@ -111,10 +111,9 @@ class ZombitGrowthMaximizer:
                     if positives.sum() + negatives.sum() > 0:
                         positives.extend(negatives)
                     else:
-                        # either too many negatives or the negative sum was too large.
+                        # too many negatives or the negative sum was too large.
                         break
 
-                # continue on to the next index
                 j -= 1
 
         return maximum

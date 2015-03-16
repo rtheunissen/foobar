@@ -2,11 +2,12 @@
 Undercover underground
 ======================
 
-As you help the rabbits establish more and more resistance groups to fight against Professor Boolean,
-you need a way to pass messages back and forth.
+As you help the rabbits establish more and more resistance groups to fight
+against Professor Boolean, you need a way to pass messages back and forth.
 
+Luckily there are abandoned tunnels between the warrens of the rabbits,
+and you need to find the best way to use them.
 
-Luckily there are abandoned tunnels between the warrens of the rabbits, and you need to find the best way to use them.
 In some cases, Beta Rabbit wants a high level of interconnectedness,
 especially when the groups show their loyalty and worthiness.
 
@@ -17,22 +18,24 @@ Every warren must be connected to every other warren somehow,
 and no two warrens should ever have more than one tunnel between them.
 Your assignment: count the number of ways to connect the resistance warrens.
 
-For example, with 3 warrens (denoted A, B, C) and 2 tunnels, there are three distinct ways to connect them:
+For example, with 3 warrens (denoted A, B, C) and 2 tunnels, there are three
+distinct ways to connect them:
 
 A-B-C
 A-C-B
 C-A-B
 
-With 4 warrens and 6 tunnels, the only way to connect them is to connect each warren to every other warren.
+With 4 warrens and 6 tunnels, the only way to connect them is to connect
+each warren to every other warren.
 
-Write a function answer(N, K) which returns the number of ways to connect N distinctly labelled warrens
-with exactly K tunnels, so that there is a path between any two warrens.
+Write a function answer(N, K) which returns the number of ways to connect
+N distinctly labelled warrens with exactly K tunnels, so that there is a
+path between any two warrens.
 
-The return value must be a string representation of the total number of ways to do so, in base 10.
-N will be at least 2 and at most 20.
+The return value must be a string representation of the total number of
+ways to do so, in base 10. N will be at least 2 and at most 20.
 K will be at least one less than N and at most (N * (N - 1)) / 2
 """
-
 
 # used for memoizing binomial coefficient calculation
 mem_choose = {}
@@ -44,12 +47,11 @@ mem_graphs = {}
 mem_counts = {}
 
 
-"""
-Calculates the binomial coefficient for n, k.
-This is equivalent to 'n choose k'.
-"""
 def choose(n, k):
-
+    """
+    Calculates the binomial coefficient for n, k.
+    This is equivalent to 'n choose k'.
+    """
     key = (n, k)
 
     if key not in mem_choose:
@@ -81,27 +83,27 @@ def choose(n, k):
     return mem_choose[key]
 
 
-"""
-Returns the total number of graphs with that can be formed using
-n nodes and k vertices. This includes graphs that are
-identical for undirected labelled graphs, as well as
-unconnected graphs.
-
-This function effectively returns the number of ways you can
-choose k vertices out of the 'n choose 2' possible choices.
-"""
 def possible_graphs(n, k):
+    """
+    Returns the total number of graphs with that can be formed using
+    n nodes and k vertices. This includes graphs that are
+    identical for undirected labelled graphs, as well as
+    unconnected graphs.
+
+    This function effectively returns the number of ways you can
+    choose k vertices out of the 'n choose 2' possible choices.
+    """
     if (n, k) not in mem_graphs:
         mem_graphs[(n, k)] = choose(n * (n - 1) >> 1, k)
 
     return mem_graphs[(n, k)]
 
-"""
-Returns the number of distinct, connected, labelled, undirected
-graphs that can be formed using 'n' nodes and 'k' vertices
-"""
-def count(n, k):
 
+def count(n, k):
+    """
+    Returns the number of distinct, connected, labelled, undirected
+    graphs that can be formed using 'n' nodes and 'k' vertices
+    """
     if (n, k) in mem_counts:
         # memoized
         return mem_counts[(n, k)]

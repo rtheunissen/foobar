@@ -81,47 +81,46 @@ class BST:
                 self.right = BST(value)
 
 
-"""
-Calculates the binomial coefficient for n, k.
-This is equivalent to 'n choose k'.
-"""
 def choose(n, k):
+    """
+    Calculates the binomial coefficient for n, k.
+    This is equivalent to 'n choose k'.
+    """
     return factorial(n) / (factorial(k) * factorial(n - k))
 
 
-"""
-Returns the total number of nodes in a tree, including the root.
-"""
 def count(tree):
+    """
+    Returns the total number of nodes in a tree, including the root.
+    """
     return 1 + count(tree.left) + count(tree.right) if tree else 0
 
 
-"""
-Returns the number of permutations of insertion order that produces a given BST.
-For example, [2, 3, 1] will create the same BST as [2, 1, 3], so there are 2.
-
-Combine each valid permutation of a subtree with each valid permutation
-of the other subtree, as a valid permutation is always the root node followed
-by the combination of the valid permutations of each subtree - recursively.
-"""
 def input_permutations(tree):
+    """
+    Returns no. of permutations of insertion order that produces a given BST.
+    For example, [2, 3, 1] will create the same BST as [2, 1, 3], ie. 2.
 
-        if not tree:
-            # there is only 1 way to permute an empty tree (no input)
-            return 1
+    Combine each valid permutation of a subtree with each valid permutation of
+    the other subtree, as a valid permutation is always the root node followed
+    by the combination of the valid permutations of each subtree - recursively.
+    """
+    if not tree:
+        # there is only 1 way to permute an empty tree (no input)
+        return 1
 
-        # respectively count the number of nodes in the left and right subtrees
-        ls = count(tree.left)
-        rs = count(tree.right)
+    # respectively count the number of nodes in the left and right subtrees
+    ls = count(tree.left)
+    rs = count(tree.right)
 
-        # recursively count the number of input permutations for each subtree
-        lp = input_permutations(tree.left)
-        rp = input_permutations(tree.right)
+    # recursively count the number of input permutations for each subtree
+    lp = input_permutations(tree.left)
+    rp = input_permutations(tree.right)
 
-        # take the number of ways you can choose the nodes in a subtree
-        # (either left or right) from all the nodes in the tree, and
-        # mulitply it by the number of input permutations of each subtree.
-        return choose(ls + rs, rs) * lp * rp
+    # take the number of ways you can choose the nodes in a subtree
+    # (either left or right) from all the nodes in the tree, and
+    # mulitply it by the number of input permutations of each subtree.
+    return choose(ls + rs, rs) * lp * rp
 
 
 def answer(seq):

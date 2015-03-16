@@ -2,18 +2,21 @@
 When it rains it pours
 ======================
 
-It's raining, it's pouring. You and your agents are nearing the building where the captive rabbits are being held,
-but a sudden storm puts your escape plans at risk.
+It's raining, it's pouring. You and your agents are nearing the building where
+the captive rabbits are being held, but a sudden storm puts your escape plans at
+risk.
 
-The structural integrity of the rabbit hutches you've built to house the fugitive rabbits is at risk
-because they can buckle when wet. Before the rabbits can be rescued from Professor Boolean's lab,
-you must compute how much standing water has accumulated on the rabbit hutches.
+The structural integrity of the rabbit hutches you've built to house the
+fugitive rabbits is at risk because they can buckle when wet. Before the rabbits
+can be rescued from Professor Boolean's lab, you must compute how much standing
+water has accumulated on the rabbit hutches.
 
-Specifically, suppose there is a line of hutches, stacked to various heights and water is poured from the top
-(and allowed to run off the sides). We'll assume all the hutches are square, have side length 1,
-and for the purposes of this problem we'll pretend that the hutch arrangement is two-dimensional.
+Specifically, suppose there is a line of hutches, stacked to various heights and
+water is poured from the top (and allowed to run off the sides). We'll assume
+all the hutches are square, have side length 1, and for the purposes of this
+problem we'll pretend that the hutch arrangement is two-dimensional.
 
-For example, suppose the heights of the stacked hutches are [1,4,2,5,1,2,3] (the hutches are shown below):
+For example, suppose the heights of the stacked hutches are [1,4,2,5,1,2,3]:
 
 ...X...
 .X.X...
@@ -22,7 +25,8 @@ For example, suppose the heights of the stacked hutches are [1,4,2,5,1,2,3] (the
 XXXXXXX
 1425123
 
-When water is poured over the top at all places and allowed to runoff, it will remain trapped at the 'O' locations:
+When water is poured over the top at all places and allowed to runoff,
+it will remain trapped at the 'O' locations:
 
 ...X...
 .XOX...
@@ -31,103 +35,105 @@ When water is poured over the top at all places and allowed to runoff, it will r
 XXXXXXX
 1425123
 
-The amount of water that has accumulated is the number of Os, which, in this instance, is 5.
+The amount of water that has accumulated is the number of Os,
+which, in this instance, is 5.
 
-Write a function called answer(heights) which, given the heights of the stacked hutches from left-to-right as a list,
-computes the total area of standing water accumulated as water is poured from the top and allowed to run off the sides.
+Write a function called answer(heights) which, given the heights of the stacked
+hutches from left-to-right as a list, computes the total area of standing water
+accumulated as water is poured from the top and allowed to run off the sides.
 
 The heights array will have at least 1 element and at most 9000 elements.
 Each element will have a value of at least 1, and at most 100000.
 """
 
 
-"""
-I've tried my best to solve this problem using formulas and logic
-but all my scribbles and calculations keep getting ruined in the rain.
-
-A decision was made to employ the services of a local water rat (Pete) who
-were also trapped in the lab. We made a deal that if we set him free, he will
-help us determine how much standing water we're dealing with so we can all escape.
-
-He spends a couple of minutes formulating his plan as he paces around the room:
-
-    - He will climp to the top of the first column and find next hutch above water.
-    - He will count the depths he dives to as he's swimming along to that hutch.
-    - He will then sum the difference between the depths and the water's surface level.
-
-    Eg.
-
-       X
-    X  X   X
-    X XX X X
-    XXXXXX X
-    XXXXXXXX
-    42352314
-
-    --------------------
-
-    Pete -->    P  X
-                X  X   X
-                X XX X X
-                XXXXXX X
-                XXXXXXXX    Total = 0
-
-    Then dives into the water, counting how deep he goes for each column.
-    He counts 2 and 1 before he comes back to the surface and climbs up at target = 3.
-
-                   X
-                XPPX   X
-                XPXX X X
-                XXXXXX X
-                XXXXXXXX
-
-                   P
-                   X
-                XOOX   X
-                XOXX X X
-                XXXXXX X
-                XXXXXXXX    Total =  0 + 3
-
-    He looks ahead to find either a column at his current height or higher, or simply
-    the highest column he can see. In this case it's the last one at target = 7
-
-    He dives into the water at a surface level of 4 (min(h[current], h[target])).
-    He counts 2, 1 and 3 before he breaches the surface at the last column.
-
-    He can see that there are no more hutches ahead or below him, so he's done.
-
-                   X
-                XOOXPPPX
-                XOXXPXPX
-                XXXXXXPX
-                XXXXXXXX
-
-
-                   X   P
-                XOOXOOOX
-                XOXXOXOX
-                XXXXXXOX
-                XXXXXXXX    Total = 3 + 6
-
-    Answer = 9
-
-"""
 def answer(h):
+    """
+    I've tried my best to solve this problem using formulas and logic
+    but all my scribbles and calculations keep getting ruined in the rain.
 
-    p = 0
-    total = 0
-    end = len(h)
+    A decision was made to employ the services of a local water rat (Pete) who
+    was also trapped in the lab. We made a deal that if we set him free, he will
+    help us calculate how much standing water there is so we can all escape.
 
-    if end < 3:
+    He spends a couple of minutes formulating his plan, pacing around the room:
+
+        - Climb to the top of the first column and find next hutch above water.
+        - Count the depth he dives to as he's swimming along to that hutch.
+        - Sum the difference between the depths and the water's surface level.
+
+        Eg.
+
+           X
+        X  X   X
+        X XX X X
+        XXXXXX X
+        XXXXXXXX
+        42352314
+
+        --------------------
+
+        Pete -->    P  X
+                    X  X   X
+                    X XX X X
+                    XXXXXX X
+                    XXXXXXXX    Total = 0
+
+        Then dives into the water, counting how deep he goes for each column.
+        Counts 2 and 1 before he comes back up and climbs up at target = 3.
+
+                       X
+                    XPPX   X
+                    XPXX X X
+                    XXXXXX X
+                    XXXXXXXX
+
+                       P
+                       X
+                    XOOX   X
+                    XOXX X X
+                    XXXXXX X
+                    XXXXXXXX    Total =  0 + 3
+
+        He looks ahead to find either a column at his current height or higher,
+        or simply the highest column he can see.
+
+        In this case it's the last one at target = 7.
+
+        He dives in at a surface level of 4 (min(h[current], h[target])).
+        He counts 2, 1 and 3 before he breaches the surface at the last column.
+
+        He can see that there are no more hutches ahead or below him - all done.
+
+                       X
+                    XOOXPPPX
+                    XOXXPXPX
+                    XXXXXXPX
+                    XXXXXXXX
+
+
+                       X   P
+                    XOOXOOOX
+                    XOXXOXOX
+                    XXXXXXOX
+                    XXXXXXXX    Total = 3 + 6
+
+        Answer = 9
+    """
+
+    if len(h) < 3:
         return 0
 
-    # while pete has not reached the end
-    while p < end - 1:
+    p = 0       # pete
+    total = 0   # accumulator for the total amount of standing water
 
-        # pete looks ahead to find either a column at his current height or higher,
+    # while pete has not reached the end
+    while p < len(h) - 1:
+
+        # pete looks ahead to find a column at his current height or higher,
         # or simply the highest column he can see.
         target = p + 1
-        for index in range(p + 1, end):
+        for index in range(p + 1, len(h)):
 
             if h[index] >= h[p]:
                 # he sees a hutch either on his current level
@@ -145,7 +151,7 @@ def answer(h):
             # so he climbs down to report the final result
             return total
 
-        # pete makes a note of the current surface level before he checks his scuba gear
+        # pete makes a note of the surface level before he checks his scuba gear
         surface = min(h[p], h[target])
 
         # pete takes a dive into the murky rain water and swims one column ahead
@@ -154,7 +160,8 @@ def answer(h):
         # on his way to the target...
         while p < target:
 
-            # pete counts the difference between the surface of the water and his current depth
+            # pete counts the difference between the surface of the water
+            # and his current depth
             total += surface - h[p]
 
             # as he keeps swimming across
