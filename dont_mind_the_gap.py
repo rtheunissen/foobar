@@ -104,8 +104,8 @@ from itertools import product
 
 class Subway:
 
-    def __init__(self, stations, closed=None):
-        self.initial = stations
+    def __init__(self, initial, closed=None):
+        self.initial = initial
         self.closed = closed
         self.build()
 
