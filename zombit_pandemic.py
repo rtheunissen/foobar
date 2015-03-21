@@ -9,8 +9,8 @@ he found that rabbits have a strange quirk: when placed in a group,
 each rabbit nudges exactly one rabbit other than itself.
 This other rabbit is chosen with uniform probability. We consider two
 rabbits to have socialized if either or both of them nudged the other.
-(Thus many rabbits could have nudged the same rabbit, and two rabbits
-    may have socialized twice.) We consider two rabbits A and B to belong
+(Thus many rabbits could have nudged the same rabbit, and two rabbits may
+have socialized twice.) We consider two rabbits A and B to belong
 to the same rabbit warren if they have socialized, or if A has socialized
 with a rabbit belonging to the same warren as B.
 
@@ -55,25 +55,27 @@ mem_single = {}
 # used for memoizing binomial coefficient calculations
 mem_choose = {}
 
-"""
-Returns the number of pseudoforests with exactly one connected component
-involving all the nodes, ie. all nodes connected by a single tree.
-'A000435' requires float division, so I'm using 'A001864 / n' instead.
-"""
+
 def S(n):
+    """
+    Returns the number of pseudoforests with exactly one connected component
+    involving all the nodes, ie. all nodes connected by a single tree.
+    'A000435' requires float division, so I'm using 'A001864 / n' instead.
+    """
     if n not in mem_single:
-        mem_single[n] = \
-            sum(choose(n, k) * (n - k) ** (n - k)* k ** k for k in range(1, n)) / n
+        values = choose(n, k) * (n - k) ** (n - k) * k ** k for k in range(1, n)
+        mem_single[n] = sum(values) / n
 
     return mem_single[n]
 
-"""
-Calculates the binomial coefficient for n, k.
-This is equivalent to 'n choose k'.
 
-http://stackoverflow.com/a/3025547/374865
-"""
 def binomial(n, k):
+    """
+    Calculates the binomial coefficient for n, k.
+    This is equivalent to 'n choose k'.
+
+    http://stackoverflow.com/a/3025547/374865
+    """
     if k > n:
         return 0
 
@@ -97,19 +99,21 @@ def binomial(n, k):
         return a // b
 
 
-"""
-Memoized binomial coefficient to count combinations
-"""
 def choose(n, k):
+    """
+    Memoized binomial coefficient to count combinations
+    """
     if (n, k) not in mem_choose:
         mem_choose[(n, k)] = binomial(n, k)
 
     return mem_choose[(n, k)]
 
 
-# Returns the number of ways n labelled items can be split according to a given partition
 def C(n, partition):
-
+    """
+    Returns the number of ways n labelled items can be split
+    according to a given partition
+    """
     num = 1
     s = 0
 
@@ -128,8 +132,10 @@ def C(n, partition):
     return num / den
 
 
-# Generates all integer partitions of n
 def partitions(n):
+    """
+    Generates all integer partitions of n
+    """
     a = [0 for i in range(n + 1)]
     k = 1
     y = n - 1
@@ -161,10 +167,10 @@ def partitions(n):
             yield p
 
 
-"""
-Calculates the numerator of the answer
-"""
 def numerator(n):
+    """
+    Calculates the numerator of the answer
+    """
     return sum(max(p) * C(n, p) * reduce(mul, map(S, p)) for p in partitions(n))
 
 
