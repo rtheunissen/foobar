@@ -104,55 +104,17 @@ from itertools import product
 
 class Subway:
 
-    def __init__(self, initial, closed=None):
-        self.initial = initial
+    def __init__(self, stations, closed=None):
+        self.stations = stations
         self.closed = closed
-        self.build()
 
-    def detour(self, name, directions):
-        """
-        Detour lines leading the the current closed station
-        """
-        for line in range(len(directions)):
-            if directions[line] == self.closed:
-                detour = self.initial[self.closed][line]
-                directions[line] = detour if detour != self.closed else name
-
-    def build(self):
-        """
-        Build the subway, taking into account if a station is closed
-        """
-        self.clear()
-
-        for name in range(len(self.initial)):
-
-            # create a copy of the current station to preverse it
-            directions = self.initial[name][:]
-
-            # check if detour is required
-            if self.closed is not None:
-                self.detour(name, directions)
-
-            self.add(name, directions)
 
     def close(self, name):
         """
         Closes a given station and rebuilds the subway with detours
         """
         self.closed = name
-        self.build()
 
-    def add(self, name, directions):
-        """
-        Adds a station to this subway
-        """
-        self.stations[name] = directions
-
-    def clear(self):
-        """
-        Clears the subway of all stations, usually before building
-        """
-        self.stations = {}
 
     def paths(self):
         """
@@ -166,18 +128,36 @@ class Subway:
         """
         Returns the total number of lines per station
         """
-        if self.initial:
-            return len(self.initial[:1][0])
+        if self.stations:
+            return len(self.stations[:1][0])
 
-    def route(self, path, start=0):
+
+    def follow(self, position, station, line):
+        """
+        Follows a station line from a starting position to a destination,
+        checking for detours if the destination station is closed
+        """
+        destination = station[line]
+
+        if destination == self.closed:
+            destination = self.stations[self.closed][line]
+
+        return destination if destination != self.closed else position
+
+
+    def route(self, path, start):
         """
         Follows a path from a starting station and returns the destination
         """
         station = self.stations[start]
+        position = start
+
         for line in path:
-            name = station[line]
-            station = self.stations[name]
-        return name
+            position = self.follow(position, station, line)
+            station = self.stations[position]
+
+        return position
+
 
     def __len__(self):
         return len(self.stations)
@@ -185,54 +165,66 @@ class Subway:
 
 def _answer(subway):
 
+
     def same_destinations(path):
+        """
+        Returns false if not all station end up in the same
+        location when following the specified path
+        """
+        target = None
 
-        # set a target that all other stating points
-        # should route to when following the path
-        target = subway.route(path)
+        for station in range(len(subway)):
 
-        for station in range(1, len(subway)):
-            if station != subway.closed:
+            # skip starting on the closed station
+            if station == subway.closed:
+                continue
 
-                # check if this station reaches the same destination
-                # when following the path, bail if not
-                if subway.route(path, station) != target:
-                    return False
+            destination = subway.route(path, station)
+
+            # set the initial target if it's the first route
+            if target is None:
+                target = destination
+
+            # bail early if it's not a meeting path
+            elif destination != target:
+                return False
+
 
     def meeting_path_exists():
+        """
+        Returns true if there is a path for which a meeting path exists
+        """
         for path in subway.paths():
-
-            # return successfully if a meeting path was found
             if same_destinations(path) is not False:
-                return True
+                return True  # a meeting path was found
 
-    def for_every_station():
 
-        # check if meeting path exists with no closed stations
-        if meeting_path_exists(): return -1
+    # check if meeting path exists with no closed stations
+    if meeting_path_exists():
+        return -1
 
-        # try closing each station one by one
-        for station in range(len(subway)):
-            subway.close(station)
-            if meeting_path_exists(): return station
+    # try closing each station one by one
+    for station in range(len(subway)):
+        subway.close(station)
+        if meeting_path_exists():
+            return station
 
-        # no meeting paths exist even if closing a station
-        return -2
-
-    return for_every_station()
+    # no meeting paths exist even if closing a station
+    return -2
 
 
 def answer(subway):
 
-    # for test 4
-    if len(subway) == 26:
-        return -1
+    # # for test 4
+    # if len(subway) == 26:
+    #     return -1
 
-    # for test 5
-    if len(subway) == 48:
-        return 0
+    # # for test 5
+    # if len(subway) == 48:
+    #     return 0
 
     return _answer(Subway(subway))
+
 
 tests = [
     (
