@@ -1,4 +1,4 @@
-# My solutions for Google's foo.bar challenges
+# My solutions for Google's Foo.Bar challenges
 
 I may update these with small language or formatting fixes from time to time.
 
