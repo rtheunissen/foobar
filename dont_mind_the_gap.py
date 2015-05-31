@@ -201,6 +201,7 @@ def _answer(subway):
 
     def meeting_path_exists():
         for path in subway.paths():
+            print path
 
             # return successfully if a meeting path was found
             if same_destinations(path) is not False:

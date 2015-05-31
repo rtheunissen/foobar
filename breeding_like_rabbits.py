@@ -42,7 +42,7 @@ def R(n):
     """
     if n < 3:
         # base cases
-        return [1 ,1, 2][n]
+        return [1, 1, 2][n]
 
     if n not in cache:
 
