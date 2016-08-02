@@ -1,4 +1,4 @@
-# My solutions for Google Foo.Bar
+# My solutions for Google foo.bar
 
 ![](http://i.imgur.com/AEsNd0H.png)
 ![](http://i.imgur.com/0YlYanm.jpg)
