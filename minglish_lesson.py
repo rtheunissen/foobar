@@ -43,7 +43,7 @@ def answer(words):
     letters = []
     visited = []
 
-    # this is a depth first graph traversal algorithm
+    # Depth first graph traversal.
     def visit(node):
         if node not in visited:
             visited.append(node)
@@ -52,45 +52,44 @@ def answer(words):
                 for edge in graph[node]:
                     visit(edge)
 
-            # have found next letter of the alphabet :simple_smile:
+            # Found the next letter of the alphabet
             letters.append(node)
 
-    # visit every starting node, depth first
+    # Visit every starting node, depth first
     for node in start:
         visit(node)
 
-    # minglish complete
+    # Minglish complete
     return ''.join(letters[::-1])
 
 
 def build_graph(words):
-
-    # start with empty graph
-    # nodes are key, edges are values
+    """
+    Start with an empty graph.
+    Nodes are keys, edges are values.
+    """
     graph = {}
-
     rows = len(words)
 
-    # the plan here is to take pairs of words with indices
+    # The plan here is to take pairs of words with indices
     # 0,1 -> 1,2 -> 2,3
     for row in range(rows - 1):
 
-        # find an edge (relationship) between two words
+        # Find an edge (relationship) between two words
         edge = find_edge(words[row], words[row + 1])
 
         if edge is not None:
-            # a valid edge could be determined,
-            # so add it to the graph
+            # A valid edge could be determined,
+            # so add it to the graph.
 
             node, direction = edge
 
             if node in graph:
-
-                # node already exists in the graph, so just add the edge
+                # The node already exists in the graph, so add the edge.
                 graph[node].append(direction)
+            
             else:
-
-                # node doesn't exist yet, so create it first
+                # The node doesn't exist yet, so create it.
                 graph[node] = [direction]
 
     return graph
@@ -98,11 +97,11 @@ def build_graph(words):
 
 def find_edge(a, b):
 
-    # minimum length of the two strings,
+    # Minimum length of the two strings,
     length = min(len(a), len(b))
 
-    # keep checking across the two words
-    # until the letters are different, ie. a an edge can be created
+    # Keep checking across the two words until the letters are different, 
+    # ie. a an edge can be created
     for c in range(length):
         if a[c] != b[c]:
             return a[c], b[c]
@@ -118,14 +117,14 @@ def start_nodes(graph):
     and only include nodes which are not present in any of the edges.
     """
 
-    # all edges
+    # All edges
     e = set()
 
     for edges in graph.values():
         for edge in edges:
             e.add(edge)
 
-    # starting nodes
+    # Starting nodes
     s = set()
 
     for node in graph:
